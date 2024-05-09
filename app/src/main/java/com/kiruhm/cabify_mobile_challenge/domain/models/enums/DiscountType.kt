@@ -14,7 +14,7 @@ sealed interface DiscountType {
     }
     class Bulk(
         private val limitAmount: Int = Constants.BULK_AMOUNT_LIMIT,
-        val transformation: (amount: Int, price: Double) -> Double
+        private val transformation: (amount: Int, price: Double) -> Double
     ) : DiscountType {
         override fun getDiscountPricePerUnit(amount: Int, price: Double) : Double =
             if (amount < limitAmount) price

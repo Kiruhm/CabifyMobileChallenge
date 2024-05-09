@@ -4,7 +4,8 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.kiruhm.cabify_mobile_challenge.R
-import com.kiruhm.cabify_mobile_challenge.domain.models.Product
+import com.kiruhm.cabify_mobile_challenge.data.local.entities.ProductEntity
+import com.kiruhm.cabify_mobile_challenge.data.mappers.toProduct
 import kotlinx.coroutines.flow.flow
 
 class DataRequestClass(private val resources: Resources) : IDataRequestClass {
@@ -17,7 +18,7 @@ class DataRequestClass(private val resources: Resources) : IDataRequestClass {
                 .let { productsJsonString ->
                     Gson().fromJson(productsJsonString, JsonObject::class.java).get("products").asJsonArray
                 }
-            val products = Gson().fromJson(productsJsonArray, Array<Product>::class.java).toList()
+            val products = Gson().fromJson(productsJsonArray, Array<ProductEntity>::class.java).map { it.toProduct() }
             emit(Result.success(products))
         } catch (e: Exception) {
             emit(Result.failure(e))
