@@ -8,8 +8,8 @@ import com.kiruhm.cabify_mobile_challenge.data.local.entities.ProductEntity
 import com.kiruhm.cabify_mobile_challenge.data.mappers.toProduct
 import kotlinx.coroutines.flow.flow
 
-class DataRequestClass(private val resources: Resources) : IDataRequestClass {
-    override suspend fun getProducts() = flow {
+class LocalDataRequestClassImpl : LocalDataRequestClass {
+    override suspend fun getProducts(resources: Resources) = flow {
         try {
             val productsJsonArray = resources
                 .openRawResource(R.raw.products)
