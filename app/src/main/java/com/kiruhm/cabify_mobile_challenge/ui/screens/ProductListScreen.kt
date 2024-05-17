@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,6 +32,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.ShoppingBasket
+import androidx.compose.material3.Badge
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -42,6 +42,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -62,12 +63,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -82,14 +81,13 @@ import com.kiruhm.cabify_mobile_challenge.domain.models.utils.Constants
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
+import com.kiruhm.cabify_mobile_challenge.ui.components.DiscountTag
 import com.kiruhm.cabify_mobile_challenge.ui.components.GridSelector
 import com.kiruhm.cabify_mobile_challenge.ui.components.ScrollDirection
 import com.kiruhm.cabify_mobile_challenge.ui.components.rememberDirectionalLazyStaggeredGridState
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 import com.kiruhm.cabify_mobile_challenge.ui.utils.MockData
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
+import com.kiruhm.cabify_mobile_challenge.ui.utils.formatPrice
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -111,13 +109,15 @@ fun ProductListScreen(
         derivedStateOf { filters.filter { it.isSelected } }
     }
 
+    val productsCartCount by remember {
+        derivedStateOf { state.productsCart.values.sum().coerceAtMost(99) }
+    }
+
     val products by remember(query, activeFilters) {
         derivedStateOf {
             state.products.filter { product ->
 
-                val containsQuery = if (query.length >= Constants.QUERY_MIN_LENGTH_TO_SEARCH)
-                    product.name.contains(query, ignoreCase = true) || product.code.contains(query, ignoreCase = true)
-                else true
+                val containsQuery = query.length >= Constants.QUERY_MIN_LENGTH_TO_SEARCH && product.name.contains(query, ignoreCase = true)
 
                 // Filter by query and then by selected filters
                 containsQuery && activeFilters
@@ -157,13 +157,33 @@ fun ProductListScreen(
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {
-                FloatingActionButton(
-                    onClick = { onEvent.invoke(ProductsEvent.ShoppingCartClicked) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingBasket,
-                        contentDescription = "Shopping basket"
-                    )
+
+                Box {
+                    FloatingActionButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = { onEvent.invoke(ProductsEvent.ShoppingCartClicked) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBasket,
+                            contentDescription = "Shopping basket"
+                        )
+                    }
+
+                    if (state.productsCart.isNotEmpty()){
+                        Badge(
+                            modifier = Modifier
+                                .padding(end = dimensions.spaceExtraSmall + dimensions.spaceXXSmall, top = dimensions.spaceExtraSmall + dimensions.spaceXXSmall)
+                                .align(Alignment.TopEnd),
+                            containerColor = Color.Transparent,
+                            contentColor = LocalContentColor.current
+                        ) {
+                            Text(
+                                text = productsCartCount.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -221,7 +241,7 @@ fun ProductListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-private fun ColumnScope.ProductListScreenHeader(
+private fun ProductListScreenHeader(
     query: String,
     onEvent: (ProductsEvent) -> Unit,
     filters: List<Filter<Product>> = emptyList(),
@@ -247,7 +267,7 @@ private fun ColumnScope.ProductListScreenHeader(
                 }
             }
         },
-        placeholder = { Text(text = stringResource(R.string.search_by_name_or_code)) }
+        placeholder = { Text(text = stringResource(R.string.search_by_name)) }
     ) {}
 
     Row(
@@ -447,7 +467,10 @@ private fun ProductItemList(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = kotlin.runCatching {
-                        product.price.formatPrice(product.currency.symbol)
+                        product.price.formatPrice(
+                            symbol = product.currency.symbol,
+                            decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy(fontWeight = FontWeight.Bold)
+                        )
                     }.getOrNull() ?: buildAnnotatedString {},
                     maxLines = 1,
                     fontWeight = FontWeight.SemiBold,
@@ -500,36 +523,10 @@ private fun ProductItemGrid(
                 )
 
                 if (product.discountType != DiscountType.None){
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.CenterEnd)
-                            .align(Alignment.TopEnd)
-                            .padding(top = dimensions.spaceXXSmall)
-                            .background(
-                                color = when (product.discountType) {
-                                    is DiscountType.Bulk -> Color.Blue
-                                    DiscountType.None -> Color.Transparent
-                                    DiscountType.TwoForOne -> Color.Red
-                                },
-                                shape = RoundedCornerShape(
-                                    topStart = dimensions.cornersSmall,
-                                    topEnd = 0.dp,
-                                    bottomStart = 0.dp,
-                                    bottomEnd = dimensions.cornersSmall
-                                )
-                            )
-                    ) {
-                        Text(
-                            text = stringResource(id = product.discountType.name),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(horizontal = dimensions.spaceExtraSmall)
-                                .wrapContentSize(Alignment.Center)
-                        )
-                    }
+                    DiscountTag(
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        discountType = product.discountType
+                    )
                 }
             }
 
@@ -547,7 +544,10 @@ private fun ProductItemGrid(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = kotlin.runCatching {
-                    product.price.formatPrice(product.currency.symbol)
+                    product.price.formatPrice(
+                        symbol = product.currency.symbol,
+                        decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy(fontWeight = FontWeight.Bold)
+                    )
                 }.getOrNull() ?: buildAnnotatedString {},
                 maxLines = 1,
                 fontWeight = FontWeight.SemiBold,
@@ -602,34 +602,5 @@ fun ProductListScreenPreview() {
             ),
             onEvent = {}
         )
-    }
-}
-
-@Composable
-private fun Double.formatPrice(symbol: String): AnnotatedString {
-
-    val formattedNumber = DecimalFormat.getInstance(Locale.getDefault()).format(this)
-    val (wholePart, decimalPart) = formattedNumber.split(DecimalFormatSymbols.getInstance(Locale.getDefault()).decimalSeparator).run {
-        when(size){
-            1 -> this[0] to "00"
-            2 -> this[0] to if (this[1].toInt() < 10) "${this[1]}0" else this[1]
-            else -> throw IllegalArgumentException("Invalid number format")
-        }
-    }
-
-    return buildAnnotatedString {
-        withStyle(
-            style = MaterialTheme.typography.bodyLarge.toSpanStyle()
-        ) {
-            append(wholePart)
-            append('\'')
-        }
-        withStyle(style = MaterialTheme.typography.bodySmall.toSpanStyle()) {
-            append(decimalPart)
-            append(' ')
-        }
-        withStyle(style = MaterialTheme.typography.bodyLarge.toSpanStyle()) {
-            append(symbol)
-        }
     }
 }
