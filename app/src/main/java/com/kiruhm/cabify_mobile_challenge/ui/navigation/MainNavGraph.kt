@@ -16,6 +16,7 @@ import com.kiruhm.cabify_mobile_challenge.ui.navigation.models.Graphs
 import com.kiruhm.cabify_mobile_challenge.ui.navigation.models.Screens
 import com.kiruhm.cabify_mobile_challenge.ui.screens.ProductDetailScreen
 import com.kiruhm.cabify_mobile_challenge.ui.screens.ProductListScreen
+import com.kiruhm.cabify_mobile_challenge.ui.screens.PurchaseProductsScreen
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
 @Composable
@@ -75,6 +76,16 @@ fun MainNavGraph(
             ProductDetailScreen(
                 modifier = Modifier.fillMaxWidth().padding(dimensions.spaceMedium),
                 product = product,
+                state = state,
+                onEvent = onEvent
+            )
+        }
+
+        composable(route = Screens.Purchase.route){
+            PurchaseProductsScreen(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensions.spaceMedium),
                 state = state,
                 onEvent = onEvent
             )

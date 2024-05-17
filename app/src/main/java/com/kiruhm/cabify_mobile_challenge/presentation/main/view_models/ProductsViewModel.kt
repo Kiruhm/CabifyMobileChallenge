@@ -53,6 +53,7 @@ class ProductsViewModel(
             ProductsEvent.ClearFilters -> clearProductFilters()
             is ProductsEvent.AddToCart -> addToCart(event.product)
             is ProductsEvent.SubtractFromCart -> subtractFromCart(event.product)
+            is ProductsEvent.PurchaseProductClicked -> {}
         }
     }
 
@@ -103,6 +104,7 @@ data class ProductsState(
 
 sealed interface ProductsEvent {
     data class ProductClicked(val product: Product) : ProductsEvent
+    data class PurchaseProductClicked(val product: Product) : ProductsEvent
     data object ShoppingCartClicked : ProductsEvent
 
     data class FilterClicked(val filter: Filter<Product>) : ProductsEvent

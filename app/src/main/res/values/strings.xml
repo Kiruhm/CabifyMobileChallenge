@@ -14,4 +14,6 @@
     <string name="the_more_you_buy_the_more_discount_you_will_receive">The more you buy the more discount you will receive</string>
     <string name="buy_two_and_get_one_for_free">Buy two and get one for free</string>
     <string name="clear_filters">Clear filters</string>
+    <string name="purchase">Purchase</string>
+    <string name="products_in_cart">Products in cart</string>
 </resources>

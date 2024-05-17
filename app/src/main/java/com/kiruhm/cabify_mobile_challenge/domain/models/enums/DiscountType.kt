@@ -14,14 +14,14 @@ sealed class DiscountType(
     data object None : DiscountType(R.string.discount_none)
 
     data object TwoForOne : DiscountType(R.string.two_for_one) {
-        override fun getDiscountPricePerUnit(amount: Int, price: Double): Double = (amount/2f).roundToInt() * price
+        override fun getDiscountPricePerUnit(amount: Int, price: Double): Double = ((amount/2f).roundToInt() * price) / amount
     }
     class Bulk(
         private val limitAmount: Int = Constants.BULK_AMOUNT_LIMIT,
-        private val transformation: (amount: Int, price: Double) -> Double
+        private val discountFormula: (amount: Int, price: Double) -> Double
     ) : DiscountType(R.string.discount_bulk) {
         override fun getDiscountPricePerUnit(amount: Int, price: Double) : Double =
             if (amount < limitAmount) price
-            else transformation(amount, price)
+            else discountFormula(amount, price)
     }
 }

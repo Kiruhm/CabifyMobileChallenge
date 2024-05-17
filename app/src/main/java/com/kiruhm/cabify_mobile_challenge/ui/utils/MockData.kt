@@ -58,4 +58,10 @@ object MockData {
         }
     }
 
+    val productsCart = mutableMapOf<Product, Int>().apply {
+        productList.shuffled().subList(0, productList.size/2).forEach { product ->
+            this[product] = (1 .. 50).random()
+        }
+    }
+
 }

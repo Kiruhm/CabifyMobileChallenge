@@ -11,6 +11,6 @@ data class Product(
     val discountType: DiscountType,
     val currency: Currency = Currency.getInstance("EUR")
 ){
-    fun getDiscountPrice(amount: Int) : Double = discountType.getDiscountPricePerUnit(amount, price)
+    fun getDiscountPricePerUnit(amount: Int) : Double = discountType.getDiscountPricePerUnit(amount, price)
 
 }
