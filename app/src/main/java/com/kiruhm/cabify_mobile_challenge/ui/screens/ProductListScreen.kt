@@ -7,6 +7,8 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -59,7 +61,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -117,7 +118,8 @@ fun ProductListScreen(
         derivedStateOf {
             state.products.filter { product ->
 
-                val containsQuery = query.length >= Constants.QUERY_MIN_LENGTH_TO_SEARCH && product.name.contains(query, ignoreCase = true)
+                val containsQuery = query.length < Constants.QUERY_MIN_LENGTH_TO_SEARCH
+                    || (query.length >= Constants.QUERY_MIN_LENGTH_TO_SEARCH && product.name.contains(query, ignoreCase = true))
 
                 // Filter by query and then by selected filters
                 containsQuery && activeFilters
@@ -172,7 +174,10 @@ fun ProductListScreen(
                     if (state.productsCart.isNotEmpty()){
                         Badge(
                             modifier = Modifier
-                                .padding(end = dimensions.spaceExtraSmall + dimensions.spaceXXSmall, top = dimensions.spaceExtraSmall + dimensions.spaceXXSmall)
+                                .padding(
+                                    end = dimensions.spaceExtraSmall + dimensions.spaceXXSmall,
+                                    top = dimensions.spaceExtraSmall + dimensions.spaceXXSmall
+                                )
                                 .align(Alignment.TopEnd),
                             containerColor = Color.Transparent,
                             contentColor = LocalContentColor.current
@@ -286,16 +291,18 @@ private fun ProductListScreenHeader(
 
             if (activeFilters.isNotEmpty()){
                 item {
-                    FilterItem(
-                        modifier = Modifier.animateItemPlacement(),
-                        name = null,
-                        icon = Icons.Default.Clear,
-                        isSelected = true,
-                        shape = CircleShape,
-                        onClicked = {
-                            onEvent.invoke(ProductsEvent.ClearFilters)
-                        }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape)
+                            .border(1.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
+                            .padding(dimensions.spaceExtraSmall)
+                            .clickable {
+                                onEvent.invoke(ProductsEvent.ClearFilters)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear_filters))
+                    }
                 }
             }
 
@@ -327,15 +334,11 @@ private fun ProductListScreenHeader(
 @Composable
 private fun FilterItem(
     modifier: Modifier = Modifier,
-    @StringRes name: Int? = null,
-    icon: ImageVector? = null,
+    @StringRes name: Int,
     isSelected: Boolean,
     shape: Shape =  FilterChipDefaults.shape,
     onClicked: () -> Unit
 ) {
-
-    if (name == null && icon == null) return
-
     FilterChip(
         modifier = modifier,
         selected = isSelected,
@@ -343,11 +346,7 @@ private fun FilterItem(
         shape = shape,
         border = BorderStroke(1.dp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground),
         label = {
-            if (icon != null) {
-                Icon(imageVector = icon, contentDescription = null)
-            } else {
-                Text(text = stringResource(id = name!!))
-            }
+            Text(text = stringResource(id = name))
         }
     )
 }
