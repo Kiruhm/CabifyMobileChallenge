@@ -54,6 +54,32 @@ class ProductsViewModel(
             is ProductsEvent.AddToCart -> addToCart(event.product)
             is ProductsEvent.SubtractFromCart -> subtractFromCart(event.product)
             is ProductsEvent.PurchaseProductClicked -> {}
+            is ProductsEvent.PurchaseItems -> purchaseItems(event.productsToBuy)
+            is ProductsEvent.ContinuePurchaseButtonClicked -> {}
+            is ProductsEvent.RemoveProductFromCart -> removeProductFromCart(event.product)
+        }
+    }
+
+    private fun removeProductFromCart(product: Product) {
+        _state.update {
+            val newCart = it.productsCart.toMutableMap()
+            newCart.remove(product)
+            it.copy(productsCart = newCart)
+        }
+    }
+
+    private fun purchaseItems(productsToBuy: Map<Product, Int>) {
+
+        // Perform purchase and then remove already bought items from cart
+
+        _state.update {
+            val newProductsInCart = it.productsCart.toMutableMap()
+
+            productsToBuy.keys.forEach { key ->
+                newProductsInCart.remove(key)
+            }
+
+            it.copy(productsCart = newProductsInCart)
         }
     }
 
@@ -63,7 +89,10 @@ class ProductsViewModel(
             if (!it.productsCart.keys.contains(product)) return@update it
 
             val newCart = it.productsCart.toMutableMap()
-            newCart[product] = ((newCart[product] ?: 0) - 1).coerceAtLeast(0)
+
+            if (newCart[product] == 1) newCart.remove(product)
+            else newCart[product] = ((newCart[product] ?: 0) - 1).coerceAtLeast(1)
+
             it.copy(productsCart = newCart)
         }
     }
@@ -110,9 +139,12 @@ sealed interface ProductsEvent {
     data class FilterClicked(val filter: Filter<Product>) : ProductsEvent
 
     data object ClearFilters : ProductsEvent
+    data class ContinuePurchaseButtonClicked(val products: List<Product>) : ProductsEvent
 
     data class AddToCart(val product: Product) : ProductsEvent
     data class SubtractFromCart(val product: Product) : ProductsEvent
+    data class PurchaseItems(val productsToBuy: Map<Product, Int>) : ProductsEvent
+    data class RemoveProductFromCart(val product: Product) : ProductsEvent
 }
 
 @Suppress("UNCHECKED_CAST")

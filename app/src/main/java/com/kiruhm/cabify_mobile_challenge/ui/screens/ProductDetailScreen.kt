@@ -3,6 +3,7 @@ package com.kiruhm.cabify_mobile_challenge.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -108,9 +108,13 @@ private fun ExpandedProductDetailScreen(
         derivedStateOf { state.productsCart[product] ?: 0 }
     }
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth(),
             horizontalArrangement = spacedBy(dimensions.spaceSmall),
         ) {
@@ -192,8 +196,7 @@ private fun ExpandedProductDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .align(BottomCenter),
+                .height(IntrinsicSize.Max),
             verticalArrangement = spacedBy(dimensions.spaceMedium),
         ) {
 
@@ -231,7 +234,10 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
         derivedStateOf { state.productsCart[product] ?: 0 }
     }
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -309,8 +315,7 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .align(BottomCenter),
+                .height(IntrinsicSize.Max),
             verticalArrangement = spacedBy(dimensions.spaceMedium),
         ) {
 

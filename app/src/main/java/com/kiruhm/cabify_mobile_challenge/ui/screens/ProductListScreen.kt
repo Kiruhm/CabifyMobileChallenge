@@ -111,7 +111,7 @@ fun ProductListScreen(
     }
 
     val productsCartCount by remember {
-        derivedStateOf { state.productsCart.values.sum().coerceAtMost(99) }
+        derivedStateOf { state.productsCart.size.coerceAtMost(99) }
     }
 
     val products by remember(query, activeFilters) {
@@ -394,7 +394,7 @@ private fun ProductItemList(
 
             Box(
                 modifier = Modifier
-                    .width(80.dp)
+                    .width(100.dp),
             ) {
                 SubcomposeAsyncImage(
                     modifier = Modifier

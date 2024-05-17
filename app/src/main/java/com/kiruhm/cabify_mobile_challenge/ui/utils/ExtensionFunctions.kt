@@ -6,6 +6,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -29,9 +33,17 @@ fun Double.formatPrice(
         append(wholePart)
         append('\'')
         withStyle(style = decimalPartStyle) {
-            append(decimalPart)
+            append(decimalPart.take(2))
             append(' ')
         }
         append(symbol)
+    }
+}
+
+fun NavController.navigateToAndClear(id: String) {
+    CoroutineScope(Dispatchers.Main).launch {
+        navigate(id) {
+            popUpTo(graph.id) { inclusive = true }
+        }
     }
 }

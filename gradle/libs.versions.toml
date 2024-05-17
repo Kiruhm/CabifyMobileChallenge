@@ -9,16 +9,13 @@ lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.9.0"
 composeBom = "2024.05.00"
 coilCompose = "2.6.0"
-gson = "2.10.1"
+gson = "2.11.0"
 material3 = "1.2.1"
 material = "1.6.5"
 navigationCompose = "2.7.7"
 ui = "1.6.7"
 
 [libraries]
-
-
-
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
