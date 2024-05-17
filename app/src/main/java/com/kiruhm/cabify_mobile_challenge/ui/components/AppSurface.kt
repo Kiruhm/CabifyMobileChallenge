@@ -1,17 +1,17 @@
-package com.kiruhm.cabify_mobile_challenge.ui.theme.components
+package com.kiruhm.cabify_mobile_challenge.ui.components
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.kiruhm.cabify_mobile_challenge.ui.theme.Cabify_mobileTheme
+import com.kiruhm.cabify_mobile_challenge.ui.theme.CabifyMobileTheme
 
 @Composable
-fun AppThemeSurface(
+fun AppSurface(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Cabify_mobileTheme {
+    CabifyMobileTheme {
         Surface(modifier = modifier.fillMaxSize(), content = content)
     }
 }
