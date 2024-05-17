@@ -1,16 +1,20 @@
 package com.kiruhm.cabify_mobile_challenge.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.Constants
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.navigation.models.Graphs
 import com.kiruhm.cabify_mobile_challenge.ui.navigation.models.Screens
+import com.kiruhm.cabify_mobile_challenge.ui.screens.ProductDetailScreen
 import com.kiruhm.cabify_mobile_challenge.ui.screens.ProductListScreen
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
@@ -22,7 +26,6 @@ fun MainNavGraph(
     onEvent: (ProductsEvent) -> Unit
 ) {
 
-    val context = LocalContext.current
     val dimensions = LocalDim.current
 
     NavHost(
@@ -49,8 +52,33 @@ fun MainNavGraph(
                 }
             )
         }
-        
-        
+
+        composable(
+            route = Screens.ProductDetail.route + "/{${Constants.NAME_KEY}}",
+            arguments = listOf(
+                navArgument(Constants.NAME_KEY){
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
+        ) { backStackEntry ->
+
+            val product = backStackEntry.arguments?.getString(Constants.NAME_KEY)?.let { productName ->
+                state.products.find { it.name == productName }
+            }
+
+            if (product == null){
+                navController.navigateUp()
+                return@composable
+            }
+
+            ProductDetailScreen(
+                modifier = Modifier.fillMaxWidth().padding(dimensions.spaceMedium),
+                product = product,
+                state = state,
+                onEvent = onEvent
+            )
+        }
     }
 
 

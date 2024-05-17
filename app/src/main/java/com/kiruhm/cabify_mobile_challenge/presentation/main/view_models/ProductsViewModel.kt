@@ -51,6 +51,27 @@ class ProductsViewModel(
             ProductsEvent.ShoppingCartClicked -> {}
             is ProductsEvent.FilterClicked -> toggleProductFilter(event.filter)
             ProductsEvent.ClearFilters -> clearProductFilters()
+            is ProductsEvent.AddToCart -> addToCart(event.product)
+            is ProductsEvent.SubtractFromCart -> subtractFromCart(event.product)
+        }
+    }
+
+    private fun subtractFromCart(product: Product) {
+        _state.update {
+
+            if (!it.productsCart.keys.contains(product)) return@update it
+
+            val newCart = it.productsCart.toMutableMap()
+            newCart[product] = ((newCart[product] ?: 0) - 1).coerceAtLeast(0)
+            it.copy(productsCart = newCart)
+        }
+    }
+
+    private fun addToCart(product: Product) {
+        _state.update {
+            val newCart = it.productsCart.toMutableMap()
+            newCart[product] = (newCart[product] ?: 0) + 1
+            it.copy(productsCart = newCart)
         }
     }
 
@@ -76,7 +97,8 @@ class ProductsViewModel(
 
 data class ProductsState(
     val products: List<Product> = emptyList(),
-    val productFilters: List<Filter<Product>> = MockData.productFilters.toMutableList()
+    val productFilters: List<Filter<Product>> = MockData.productFilters.toMutableList(),
+    val productsCart: Map<Product, Int> = emptyMap()
 )
 
 sealed interface ProductsEvent {
@@ -86,6 +108,9 @@ sealed interface ProductsEvent {
     data class FilterClicked(val filter: Filter<Product>) : ProductsEvent
 
     data object ClearFilters : ProductsEvent
+
+    data class AddToCart(val product: Product) : ProductsEvent
+    data class SubtractFromCart(val product: Product) : ProductsEvent
 }
 
 @Suppress("UNCHECKED_CAST")
