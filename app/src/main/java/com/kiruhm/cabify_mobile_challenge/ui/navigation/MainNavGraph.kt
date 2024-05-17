@@ -87,7 +87,15 @@ fun MainNavGraph(
                     .fillMaxWidth()
                     .padding(dimensions.spaceMedium),
                 state = state,
-                onEvent = onEvent
+                onEvent = { event ->
+
+                    when(event){
+                        is ProductsEvent.PurchaseProductClicked -> navController.navigate(Screens.ProductDetail.route + "/${event.product.name}")
+                        else -> {}
+                    }
+
+                    onEvent(event)
+                }
             )
         }
     }
