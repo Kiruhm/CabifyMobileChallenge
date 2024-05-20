@@ -55,7 +55,7 @@ fun PurchaseProductsScreen(
 
     val totalPrice by remember {
         derivedStateOf {
-            state.productsCart.entries.sumOf { (product, quantity) ->
+            productsToBuy.entries.sumOf { (product, quantity) ->
                 val pricePerUnitWithDiscount = product.getDiscountPricePerUnit(quantity)
                 pricePerUnitWithDiscount * quantity
             }

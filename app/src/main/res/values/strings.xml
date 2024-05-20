@@ -11,7 +11,7 @@
     <string name="remove_quantity">Remove quantity</string>
     <string name="quantity">Quantity: %1$d</string>
     <string name="add_to_cart">Add to cart</string>
-    <string name="the_more_you_buy_the_more_discount_you_will_receive">The more you buy the more discount you will receive</string>
+    <string name="the_more_you_buy_the_more_discount_you_will_receive">The more you buy the more discount you will receive.</string>
     <string name="buy_two_and_get_one_for_free">Buy two and get one for free</string>
     <string name="clear_filters">Clear filters</string>
     <string name="purchase">Purchase</string>
@@ -28,4 +28,5 @@
     <string name="buy">Buy</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
+    <string name="purchase_more_than_x_units_to_qualify_for_the_discount">Purchase more than %1$d units to qualify for the discount.</string>
 </resources>

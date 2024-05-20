@@ -17,7 +17,7 @@ sealed class DiscountType(
         override fun getDiscountPricePerUnit(amount: Int, price: Double): Double = ((amount/2f).roundToInt() * price) / amount
     }
     class Bulk(
-        private val limitAmount: Int = Constants.BULK_AMOUNT_LIMIT,
+        val limitAmount: Int = Constants.BULK_AMOUNT_LIMIT,
         private val discountFormula: (amount: Int, price: Double) -> Double
     ) : DiscountType(R.string.discount_bulk) {
         override fun getDiscountPricePerUnit(amount: Int, price: Double) : Double =

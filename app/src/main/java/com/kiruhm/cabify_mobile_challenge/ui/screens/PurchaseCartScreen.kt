@@ -36,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,11 +81,11 @@ fun PurchaseCartScreen(
 
     val dimensions = LocalDim.current
 
-    var productsToBuy by rememberSaveable(state.productsCart) {
-        mutableStateOf(state.productsCart.map { it to true }.toMap())
+    var productsToBuy: Map<Map.Entry<Product, Int>, Boolean> by rememberSaveable {
+        mutableStateOf(emptyMap())
     }
 
-    val selectedProducts by remember {
+    val selectedProducts by remember(productsToBuy) {
         derivedStateOf {
             productsToBuy.filter { it.value }.keys
         }
@@ -184,6 +186,13 @@ fun PurchaseCartScreen(
             }
         }
     }
+
+    // This helps to maintain the selection of the products in the cart when one is removed
+    LaunchedEffect(state.productsCart) {
+        productsToBuy = state.productsCart.map {
+            it to (productsToBuy[it] ?: true)
+        }.toMap()
+    }
 }
 
 @Composable
@@ -197,8 +206,8 @@ private fun PurchaseProductItem(
     onSelectionChange: (Boolean) -> Unit
 ) {
 
-    val costPerUnit = product.getDiscountPricePerUnit(quantity)
-    val productCost = costPerUnit * quantity
+    val productCostPerUnit = product.getDiscountPricePerUnit(quantity)
+    val productCostPerUnitWithoutDiscount = product.price
 
     val dimensions = LocalDim.current
 
@@ -312,29 +321,31 @@ private fun PurchaseProductItem(
                     text =
                         buildAnnotatedString {
                             append(runCatching {
-                                productCost.formatPrice(
-                                    symbol = product.currency.symbol,
+                                productCostPerUnit.formatPrice(
+                                    symbol = product.currency.symbol + "/u",
                                     decimalPartStyle = MaterialTheme.typography.bodyMedium.toSpanStyle()
                                         .copy(fontWeight = FontWeight.Bold)
                                 )
                             }.getOrNull() ?: buildAnnotatedString {})
 
-                            withStyle(
-                                MaterialTheme.typography.bodyMedium.toSpanStyle().copy(
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = .8f),
-                                    fontStyle = FontStyle.Italic
-                                )
-                            ) {
-                                append(" (")
-                                append(
-                                    runCatching {
-                                        costPerUnit.formatPrice(
-                                            symbol = product.currency.symbol + "/u",
-                                            decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy()
-                                        )
-                                    }.getOrNull() ?: buildAnnotatedString {}
-                                )
-                                append(")")
+                            if (productCostPerUnitWithoutDiscount != productCostPerUnit) {
+                                append(" ")
+                                withStyle(
+                                    MaterialTheme.typography.bodyMedium.toSpanStyle().copy(
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = .8f),
+                                        fontStyle = FontStyle.Italic,
+                                        textDecoration = TextDecoration.LineThrough,
+                                    )
+                                ) {
+                                    append(
+                                        runCatching {
+                                            productCostPerUnitWithoutDiscount.formatPrice(
+                                                symbol = product.currency.symbol + "/u",
+                                                decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy()
+                                            )
+                                        }.getOrNull() ?: buildAnnotatedString {}
+                                    )
+                                }
                             }
                         },
                     style = MaterialTheme.typography.bodyLarge,

@@ -351,9 +351,12 @@ private fun DiscountText(
     val dimensions = LocalDim.current
 
     val (color, discountText) = when(discountType){
-        is DiscountType.Bulk -> BulkColor to R.string.the_more_you_buy_the_more_discount_you_will_receive
-        DiscountType.None -> Color.Transparent to null
-        DiscountType.TwoForOne -> TwoForOneColor to R.string.buy_two_and_get_one_for_free
+        is DiscountType.Bulk ->
+            BulkColor to stringResource(id = R.string.the_more_you_buy_the_more_discount_you_will_receive) + " " + stringResource(
+                R.string.purchase_more_than_x_units_to_qualify_for_the_discount, discountType.limitAmount
+            )
+        DiscountType.None -> Color.Transparent to ""
+        DiscountType.TwoForOne -> TwoForOneColor to stringResource(id = R.string.buy_two_and_get_one_for_free)
     }
 
     Column(
@@ -374,7 +377,7 @@ private fun DiscountText(
                 bottom = dimensions.spaceMedium,
                 top = dimensions.spaceSmall
             ),
-            text = discountText?.let { stringResource(id = it) } ?: "",
+            text = discountText,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = color
