@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -357,8 +358,8 @@ private fun DiscountText(
 
     val (color, discountText) = when(discountType){
         is DiscountType.Bulk ->
-            BulkColor to stringResource(id = R.string.the_more_you_buy_the_more_discount_you_will_receive) + " " + stringResource(
-                R.string.purchase_more_than_x_units_to_qualify_for_the_discount, discountType.limitAmount
+            BulkColor to stringResource(id = R.string.the_more_you_buy_the_more_discount_you_will_receive) + " " + pluralStringResource(
+                R.plurals.purchase_more_than_x_units_to_qualify_for_the_discount, discountType.limitAmount, discountType.limitAmount
             )
         DiscountType.None -> Color.Transparent to ""
         DiscountType.TwoForOne -> TwoForOneColor to stringResource(id = R.string.buy_two_and_get_one_for_free)

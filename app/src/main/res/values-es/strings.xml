@@ -28,7 +28,10 @@
     <string name="buy">Comprar</string>
     <string name="cancel">Cancelar</string>
     <string name="remove">Quitar</string>
-    <string name="purchase_more_than_x_units_to_qualify_for_the_discount">Compra más de %1$d unidades para optar al descuento.</string>
+    <plurals name="purchase_more_than_x_units_to_qualify_for_the_discount">
+        <item quantity="one">Compra más de %1$d unidad para optar al descuento.</item>
+        <item quantity="other">Compra más de %1$d unidades para optar al descuento.</item>
+    </plurals>
     <string name="quantity_description">Cantidad</string>
     <string name="add_quantity">Añadir cantidad</string>
     <string name="positive_button">Botón positivo</string>

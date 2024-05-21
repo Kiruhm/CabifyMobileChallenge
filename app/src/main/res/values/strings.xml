@@ -28,7 +28,10 @@
     <string name="buy">Buy</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
-    <string name="purchase_more_than_x_units_to_qualify_for_the_discount">Purchase more than %1$d units to qualify for the discount.</string>
+    <plurals name="purchase_more_than_x_units_to_qualify_for_the_discount">
+        <item quantity="one">Purchase more than %1$d unit to qualify for the discount.</item>
+        <item quantity="other">Purchase more than %1$d units to qualify for the discount.</item>
+    </plurals>
     <string name="product_item_description_list" translatable="false">Product list item</string>
     <string name="product_item_description_grid" translatable="false">Product grid item</string>
     <string name="quantity_description">Quantity</string>
@@ -37,6 +40,6 @@
     <string name="negative_button">Negative button</string>
     <string name="shopping_basket">Shopping basket</string>
     <string name="loading_image">Loading image</string>
-    <string name="grid_selector_list_description">List</string>
+    <string name="grid_selector_list_description" translatable="false">List</string>
     <string name="grid_selector_grid_description">Grid</string>
 </resources>
