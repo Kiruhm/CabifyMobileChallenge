@@ -431,7 +431,7 @@ private fun ProductItemList(
                         Icon(
                             modifier = Modifier.size(dimensions.iconMediumSize),
                             imageVector = Icons.Default.Image,
-                            contentDescription = "Loading"
+                            contentDescription = stringResource(id = R.string.loading_image)
                         )
                     },
                     error = { rememberVectorPainter(Icons.Default.Image) }
@@ -538,7 +538,7 @@ private fun ProductItemGrid(
                         Icon(
                             modifier = Modifier.size(dimensions.iconMediumSize),
                             imageVector = Icons.Default.Image,
-                            contentDescription = "Loading"
+                            contentDescription = stringResource(id = R.string.loading_image)
                         )
                     },
                     error = { rememberVectorPainter(Icons.Default.Image) }

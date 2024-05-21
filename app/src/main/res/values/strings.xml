@@ -37,4 +37,6 @@
     <string name="negative_button">Negative button</string>
     <string name="shopping_basket">Shopping basket</string>
     <string name="loading_image">Loading image</string>
+    <string name="grid_selector_list_description">List</string>
+    <string name="grid_selector_grid_description">Grid</string>
 </resources>

@@ -16,9 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
@@ -44,7 +46,9 @@ fun GridSelector(
             label = {
                 Icon(
                     modifier = Modifier.size(dimensions.iconSmallSize + dimensions.iconExtraSmallSize),
-                    imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "List",
+                    imageVector = Icons.AutoMirrored.Filled.List, contentDescription = stringResource(
+                        id = R.string.grid_selector_list_description
+                    )
                 )
             }
         )
@@ -57,7 +61,9 @@ fun GridSelector(
             label = {
                 Icon(
                     modifier = Modifier.size(dimensions.iconSmallSize + dimensions.iconExtraSmallSize),
-                    imageVector = Icons.Default.GridView, contentDescription = "Grid"
+                    imageVector = Icons.Default.GridView, contentDescription = stringResource(
+                        id = R.string.grid_selector_grid_description
+                    )
                 )
             }
         )
