@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="discount_none">Ninguno</string>
+    <string name="two_for_one">2x1</string>
+    <string name="discount_bulk">Granel</string>
+    <string name="filter_discount_two_for_one">2x1</string>
+    <string name="filter_discount_bulk">Granel</string>
+    <string name="clear">limpiar</string>
+    <string name="search_by_name" tools:ignore="TypographyEllipsis">Busca por nombre...</string>
+    <string name="subtract_quantity">Restar cantidad</string>
+    <string name="remove_quantity">Eliminar cantidad</string>
+    <string name="quantity">Cantidad: %1$d</string>
+    <string name="add_to_cart">Añadir al carrito</string>
+    <string name="the_more_you_buy_the_more_discount_you_will_receive">Cuanto más compres, más descuento recibirás.</string>
+    <string name="buy_two_and_get_one_for_free">Compra dos y llévate uno gratis</string>
+    <string name="clear_filters">Limpiar filtros</string>
+    <string name="purchase">Comprar</string>
+    <string name="products_in_cart">Productos en el carrito</string>
+    <string name="purchase_summary">Resumen de compra</string>
+    <string name="continue_purchase">Continuar</string>
+    <string name="cart_title">Carrito de compra</string>
+    <string name="purchase_title">Comprar</string>
+    <string name="back_button_desc">Volver</string>
+    <string name="delete_from_cart">Quitar del carrito</string>
+    <string name="currently_there_is_no_products_in_your_shopping_cart">Actualmente no hay productos en tu carrito de compras :(</string>
+    <string name="do_you_really_want_to_buy_the_selected_product">¿Realmente quieres comprar los productos seleccionados?</string>
+    <string name="do_you_really_want_to_remove_the_selected_product">¿Realmente quieres eliminar el producto seleccionado?</string>
+    <string name="buy">Comprar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="remove">Quitar</string>
+    <plurals name="purchase_more_than_x_units_to_qualify_for_the_discount">
+        <item quantity="one">Compra más de %1$d unidad para optar al descuento.</item>
+        <item quantity="other">Compra más de %1$d unidades para optar al descuento.</item>
+    </plurals>
+    <string name="quantity_description">Cantidad</string>
+    <string name="add_quantity">Añadir cantidad</string>
+    <string name="positive_button">Botón positivo</string>
+    <string name="negative_button">Botón negativo</string>
+    <string name="shopping_basket">Carrito de la compra</string>
+    <string name="loading_image">Imagen de carga</string>
+</resources>

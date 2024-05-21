@@ -7,8 +7,10 @@ data class Product(
     val code: String,
     val name: String,
     val price: Double,
+    val imageUrls: List<String>,
     val discountType: DiscountType,
     val currency: Currency = Currency.getInstance("EUR")
 ){
-    fun getDiscountPrice(amount: Int) : Double = discountType.getDiscountPricePerUnit(amount, price)
+    fun getDiscountPricePerUnit(amount: Int) : Double = discountType.getDiscountPricePerUnit(amount, price)
+
 }
