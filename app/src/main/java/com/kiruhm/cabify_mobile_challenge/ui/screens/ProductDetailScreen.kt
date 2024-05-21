@@ -3,6 +3,7 @@ package com.kiruhm.cabify_mobile_challenge.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,13 +37,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +57,7 @@ import coil.request.ImageRequest
 import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
 import com.kiruhm.cabify_mobile_challenge.domain.models.enums.DiscountType
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
@@ -108,9 +112,13 @@ private fun ExpandedProductDetailScreen(
         derivedStateOf { state.productsCart[product] ?: 0 }
     }
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth(),
             horizontalArrangement = spacedBy(dimensions.spaceSmall),
         ) {
@@ -136,7 +144,7 @@ private fun ExpandedProductDetailScreen(
                                 Icon(
                                     modifier = Modifier.size(dimensions.iconMediumSize),
                                     imageVector = Icons.Default.Image,
-                                    contentDescription = "Loading"
+                                    contentDescription = stringResource(R.string.loading_image),
                                 )
                             },
                             error = { rememberVectorPainter(Icons.Default.Image) }
@@ -155,8 +163,7 @@ private fun ExpandedProductDetailScreen(
                     modifier = Modifier
                         .wrapContentSize(Alignment.Center)
                         .align(Alignment.CenterHorizontally),
-                    totalPages = pagerState.pageCount,
-                    currentPage = pagerState.currentPage + 1
+                    pagerState = pagerState
                 )
             }
 
@@ -192,14 +199,15 @@ private fun ExpandedProductDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .align(BottomCenter),
+                .height(IntrinsicSize.Max),
             verticalArrangement = spacedBy(dimensions.spaceMedium),
         ) {
 
             if (quantityInCart == 0) {
                 Button(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(TestTags.ADD_TO_CART_TAG)
+                        .fillMaxSize(),
                     onClick = { onEvent.invoke(ProductsEvent.AddToCart(product)) }
                 ) {
                     Text(
@@ -231,7 +239,10 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
         derivedStateOf { state.productsCart[product] ?: 0 }
     }
 
-    Box(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -260,7 +271,7 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
                             Icon(
                                 modifier = Modifier.size(dimensions.iconMediumSize),
                                 imageVector = Icons.Default.Image,
-                                contentDescription = "Loading"
+                                contentDescription = stringResource(R.string.loading_image)
                             )
                         },
                         error = { rememberVectorPainter(Icons.Default.Image) }
@@ -279,8 +290,7 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
                 modifier = Modifier
                     .wrapContentSize(Alignment.Center)
                     .align(Alignment.CenterHorizontally),
-                totalPages = pagerState.pageCount,
-                currentPage = pagerState.currentPage + 1
+                pagerState = pagerState
             )
 
             if (product.discountType != DiscountType.None){
@@ -309,14 +319,15 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Max)
-                .align(BottomCenter),
+                .height(IntrinsicSize.Max),
             verticalArrangement = spacedBy(dimensions.spaceMedium),
         ) {
 
             if (quantityInCart == 0) {
                 Button(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(TestTags.ADD_TO_CART_TAG)
+                        .fillMaxSize(),
                     onClick = { onEvent.invoke(ProductsEvent.AddToCart(product)) }
                 ) {
                     Text(
@@ -346,9 +357,12 @@ private fun DiscountText(
     val dimensions = LocalDim.current
 
     val (color, discountText) = when(discountType){
-        is DiscountType.Bulk -> BulkColor to R.string.the_more_you_buy_the_more_discount_you_will_receive
-        DiscountType.None -> Color.Transparent to null
-        DiscountType.TwoForOne -> TwoForOneColor to R.string.buy_two_and_get_one_for_free
+        is DiscountType.Bulk ->
+            BulkColor to stringResource(id = R.string.the_more_you_buy_the_more_discount_you_will_receive) + " " + pluralStringResource(
+                R.plurals.purchase_more_than_x_units_to_qualify_for_the_discount, discountType.limitAmount, discountType.limitAmount
+            )
+        DiscountType.None -> Color.Transparent to ""
+        DiscountType.TwoForOne -> TwoForOneColor to stringResource(id = R.string.buy_two_and_get_one_for_free)
     }
 
     Column(
@@ -369,7 +383,7 @@ private fun DiscountText(
                 bottom = dimensions.spaceMedium,
                 top = dimensions.spaceSmall
             ),
-            text = discountText?.let { stringResource(id = it) } ?: "",
+            text = discountText,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = color
@@ -377,23 +391,23 @@ private fun DiscountText(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HorizontalPagerIndicator(
     modifier: Modifier = Modifier,
-    currentPage: Int,
-    totalPages: Int
+    pagerState: PagerState
 ) {
 
     val dimensions = LocalDim.current
 
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = CenterVertically,
         horizontalArrangement = spacedBy(dimensions.spaceSmall)
     ){
-        (1 .. totalPages).forEach { page ->
+        repeat(pagerState.pageCount) { page ->
 
-            val isSelected = page == currentPage
+            val isSelected = page == pagerState.targetPage
 
             Box(
                 modifier = Modifier

@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">cabify_mobile</string>
+    <string name="app_name" translatable="false">Cabify Mobile Challenge</string>
     <string name="discount_none">None</string>
     <string name="two_for_one">2x1</string>
     <string name="discount_bulk">Bulk</string>
@@ -11,7 +11,35 @@
     <string name="remove_quantity">Remove quantity</string>
     <string name="quantity">Quantity: %1$d</string>
     <string name="add_to_cart">Add to cart</string>
-    <string name="the_more_you_buy_the_more_discount_you_will_receive">The more you buy the more discount you will receive</string>
+    <string name="the_more_you_buy_the_more_discount_you_will_receive">The more you buy the more discount you will receive.</string>
     <string name="buy_two_and_get_one_for_free">Buy two and get one for free</string>
     <string name="clear_filters">Clear filters</string>
+    <string name="purchase">Purchase</string>
+    <string name="products_in_cart">Products in cart</string>
+    <string name="purchase_summary">Purchase summary</string>
+    <string name="continue_purchase">Continue</string>
+    <string name="cart_title">Shopping cart</string>
+    <string name="purchase_title">Purchase</string>
+    <string name="back_button_desc">Back</string>
+    <string name="delete_from_cart">Delete from cart</string>
+    <string name="currently_there_is_no_products_in_your_shopping_cart">Currently there is no products in your shopping cart :(</string>
+    <string name="do_you_really_want_to_buy_the_selected_product">Do you really want to buy the selected products?</string>
+    <string name="do_you_really_want_to_remove_the_selected_product">Do you really want to remove the selected product?</string>
+    <string name="buy">Buy</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <plurals name="purchase_more_than_x_units_to_qualify_for_the_discount">
+        <item quantity="one">Purchase more than %1$d unit to qualify for the discount.</item>
+        <item quantity="other">Purchase more than %1$d units to qualify for the discount.</item>
+    </plurals>
+    <string name="product_item_description_list" translatable="false">Product list item</string>
+    <string name="product_item_description_grid" translatable="false">Product grid item</string>
+    <string name="quantity_description">Quantity</string>
+    <string name="add_quantity">Add quantity</string>
+    <string name="positive_button">Positive button</string>
+    <string name="negative_button">Negative button</string>
+    <string name="shopping_basket">Shopping basket</string>
+    <string name="loading_image">Loading image</string>
+    <string name="grid_selector_list_description" translatable="false">List</string>
+    <string name="grid_selector_grid_description">Grid</string>
 </resources>
