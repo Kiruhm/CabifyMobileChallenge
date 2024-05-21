@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Cabify Mobile Challenge</string>
+    <string name="app_name" translatable="false">Cabify Mobile Challenge</string>
     <string name="discount_none">None</string>
     <string name="two_for_one">2x1</string>
     <string name="discount_bulk">Bulk</string>
@@ -29,4 +29,12 @@
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
     <string name="purchase_more_than_x_units_to_qualify_for_the_discount">Purchase more than %1$d units to qualify for the discount.</string>
+    <string name="product_item_description_list" translatable="false">Product list item</string>
+    <string name="product_item_description_grid" translatable="false">Product grid item</string>
+    <string name="quantity_description">Quantity</string>
+    <string name="add_quantity">Add quantity</string>
+    <string name="positive_button">Positive button</string>
+    <string name="negative_button">Negative button</string>
+    <string name="shopping_basket">Shopping basket</string>
+    <string name="loading_image">Loading image</string>
 </resources>

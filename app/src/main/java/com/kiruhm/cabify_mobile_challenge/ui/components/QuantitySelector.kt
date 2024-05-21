@@ -24,11 +24,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kiruhm.cabify_mobile_challenge.R
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
 @Composable
@@ -40,6 +45,7 @@ fun QuantitySelector(
 ) {
 
     val dimensions = LocalDim.current
+    val context = LocalContext.current
 
     Row(
         modifier = modifier
@@ -53,6 +59,7 @@ fun QuantitySelector(
     ) {
         IconButton(
             modifier = Modifier
+                .testTag(TestTags.REMOVE_PRODUCT_TAG)
                 .clip(RoundedCornerShape(topStart = dimensions.cornersLarge, bottomStart = dimensions.cornersLarge))
                 .background(MaterialTheme.colorScheme.primary),
             onClick = onSubtractClicked) {
@@ -73,7 +80,9 @@ fun QuantitySelector(
 
         Text(
             text = stringResource(R.string.quantity, quantity),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).semantics {
+                contentDescription = context.getString(R.string.quantity_description)
+            },
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium,
@@ -82,6 +91,7 @@ fun QuantitySelector(
 
         IconButton(
             modifier = Modifier
+                .testTag(TestTags.ADD_PRODUCT_TAG)
                 .clip(RoundedCornerShape(topEnd = dimensions.cornersLarge, bottomEnd = dimensions.cornersLarge))
                 .background(MaterialTheme.colorScheme.primary),
             onClick = onAddClicked,
@@ -89,7 +99,7 @@ fun QuantitySelector(
             Icon(
                 imageVector = Icons.Default.Add,
                 tint = MaterialTheme.colorScheme.background,
-                contentDescription = stringResource(R.string.subtract_quantity),
+                contentDescription = stringResource(R.string.add_quantity),
             )
         }
     }

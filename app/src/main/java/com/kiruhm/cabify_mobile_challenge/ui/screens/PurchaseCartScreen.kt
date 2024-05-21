@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.buildAnnotatedString
@@ -58,17 +59,22 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
 import com.kiruhm.cabify_mobile_challenge.domain.models.enums.DiscountType
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
 import com.kiruhm.cabify_mobile_challenge.ui.components.GeneralDialog
+import com.kiruhm.cabify_mobile_challenge.ui.theme.BulkColor
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
+import com.kiruhm.cabify_mobile_challenge.ui.theme.TwoForOneColor
 import com.kiruhm.cabify_mobile_challenge.ui.utils.MockData
 import com.kiruhm.cabify_mobile_challenge.ui.utils.formatPrice
 
@@ -97,6 +103,7 @@ fun PurchaseCartScreen(
 
     productToBeRemovedFromCart?.let { product ->
         GeneralDialog(
+            modifier = Modifier.testTag(TestTags.DELETE_PRODUCT_DIALOG_TAG),
             description = stringResource(R.string.do_you_really_want_to_remove_the_selected_product),
             positiveButtonText = stringResource(R.string.remove),
             negativeButtonText = stringResource(R.string.cancel),
@@ -153,7 +160,9 @@ fun PurchaseCartScreen(
                         val (product, quantity) = productAndQuantity
 
                         PurchaseProductItem(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .testTag(TestTags.CART_PRODUCT_TAG)
+                                .fillMaxWidth(),
                             product = product,
                             quantity = quantity,
                             isSelected = isSelected,
@@ -177,7 +186,9 @@ fun PurchaseCartScreen(
                     .padding(dimensions.spaceMedium),
             ) {
                 Button(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .testTag(TestTags.CART_PRODUCT_CONTINUE_BUTTON_TAG)
+                        .fillMaxWidth(),
                     enabled = selectedProducts.isNotEmpty(),
                     onClick = { onEvent.invoke(ProductsEvent.ContinuePurchaseButtonClicked(selectedProducts.map { it.key })) }
                 ) {
@@ -260,7 +271,7 @@ private fun PurchaseProductItem(
                         Icon(
                             modifier = Modifier.size(dimensions.iconMediumSize),
                             imageVector = Icons.Default.Image,
-                            contentDescription = "Loading"
+                            contentDescription = stringResource(R.string.loading_image)
                         )
                     },
                     error = { rememberVectorPainter(Icons.Default.Image) }
@@ -274,9 +285,9 @@ private fun PurchaseProductItem(
                             .padding(top = dimensions.spaceXXSmall)
                             .background(
                                 color = when (product.discountType) {
-                                    is DiscountType.Bulk -> Color.Blue
+                                    is DiscountType.Bulk -> BulkColor
                                     DiscountType.None -> Color.Transparent
-                                    DiscountType.TwoForOne -> Color.Red
+                                    DiscountType.TwoForOne -> TwoForOneColor
                                 },
                                 shape = RoundedCornerShape(
                                     topStart = dimensions.cornersSmall,
@@ -341,7 +352,7 @@ private fun PurchaseProductItem(
                                         runCatching {
                                             productCostPerUnitWithoutDiscount.formatPrice(
                                                 symbol = product.currency.symbol + "/u",
-                                                decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle().copy()
+                                                decimalPartStyle = MaterialTheme.typography.bodySmall.toSpanStyle()
                                             )
                                         }.getOrNull() ?: buildAnnotatedString {}
                                     )
@@ -356,13 +367,17 @@ private fun PurchaseProductItem(
             }
 
             Text(
-                modifier = Modifier.wrapContentWidth(),
+                modifier = Modifier
+                    .testTag(TestTags.CART_PRODUCT_AMOUNT_TAG)
+                    .wrapContentWidth(),
                 text = "x$quantity",
                 fontWeight = FontWeight.Bold
             )
 
             Checkbox(
-                modifier = Modifier.wrapContentWidth(Alignment.End),
+                modifier = Modifier
+                    .testTag(TestTags.CART_PRODUCT_SELECT_BOX_TAG)
+                    .wrapContentWidth(Alignment.End),
                 checked = isSelected,
                 onCheckedChange = onSelectionChange
             )
@@ -393,7 +408,8 @@ private fun PurchaseProductItemPreview() {
     }
 }
 
-@Preview
+@PreviewLightDark
+@PreviewScreenSizes
 @Composable
 private fun PurchaseCartScreenPreview() {
     AppSurface {

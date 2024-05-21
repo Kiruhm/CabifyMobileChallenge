@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +56,7 @@ import coil.request.ImageRequest
 import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
 import com.kiruhm.cabify_mobile_challenge.domain.models.enums.DiscountType
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
@@ -140,7 +143,7 @@ private fun ExpandedProductDetailScreen(
                                 Icon(
                                     modifier = Modifier.size(dimensions.iconMediumSize),
                                     imageVector = Icons.Default.Image,
-                                    contentDescription = "Loading"
+                                    contentDescription = stringResource(R.string.loading_image),
                                 )
                             },
                             error = { rememberVectorPainter(Icons.Default.Image) }
@@ -159,8 +162,7 @@ private fun ExpandedProductDetailScreen(
                     modifier = Modifier
                         .wrapContentSize(Alignment.Center)
                         .align(Alignment.CenterHorizontally),
-                    totalPages = pagerState.pageCount,
-                    currentPage = pagerState.currentPage + 1
+                    pagerState = pagerState
                 )
             }
 
@@ -202,7 +204,9 @@ private fun ExpandedProductDetailScreen(
 
             if (quantityInCart == 0) {
                 Button(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(TestTags.ADD_TO_CART_TAG)
+                        .fillMaxSize(),
                     onClick = { onEvent.invoke(ProductsEvent.AddToCart(product)) }
                 ) {
                     Text(
@@ -266,7 +270,7 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
                             Icon(
                                 modifier = Modifier.size(dimensions.iconMediumSize),
                                 imageVector = Icons.Default.Image,
-                                contentDescription = "Loading"
+                                contentDescription = stringResource(R.string.loading_image)
                             )
                         },
                         error = { rememberVectorPainter(Icons.Default.Image) }
@@ -285,8 +289,7 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
                 modifier = Modifier
                     .wrapContentSize(Alignment.Center)
                     .align(Alignment.CenterHorizontally),
-                totalPages = pagerState.pageCount,
-                currentPage = pagerState.currentPage + 1
+                pagerState = pagerState
             )
 
             if (product.discountType != DiscountType.None){
@@ -321,7 +324,9 @@ private fun CompactProductDetailScreen(modifier: Modifier, product: Product, sta
 
             if (quantityInCart == 0) {
                 Button(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(TestTags.ADD_TO_CART_TAG)
+                        .fillMaxSize(),
                     onClick = { onEvent.invoke(ProductsEvent.AddToCart(product)) }
                 ) {
                     Text(
@@ -385,23 +390,23 @@ private fun DiscountText(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HorizontalPagerIndicator(
     modifier: Modifier = Modifier,
-    currentPage: Int,
-    totalPages: Int
+    pagerState: PagerState
 ) {
 
     val dimensions = LocalDim.current
 
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = CenterVertically,
         horizontalArrangement = spacedBy(dimensions.spaceSmall)
     ){
-        (1 .. totalPages).forEach { page ->
+        repeat(pagerState.pageCount) { page ->
 
-            val isSelected = page == currentPage
+            val isSelected = page == pagerState.targetPage
 
             Box(
                 modifier = Modifier

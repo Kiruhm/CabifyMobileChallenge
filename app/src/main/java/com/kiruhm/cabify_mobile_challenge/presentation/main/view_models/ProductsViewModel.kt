@@ -5,10 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.Filter
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
+import com.kiruhm.cabify_mobile_challenge.domain.models.enums.DiscountType
 import com.kiruhm.cabify_mobile_challenge.domain.use_cases.GetProductsUseCase
-import com.kiruhm.cabify_mobile_challenge.ui.utils.MockData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -127,7 +128,18 @@ class ProductsViewModel(
 
 data class ProductsState(
     val products: List<Product> = emptyList(),
-    val productFilters: List<Filter<Product>> = MockData.productFilters.toMutableList(),
+    val productFilters: List<Filter<Product>> = listOf(
+        Filter(
+            name = R.string.filter_discount_two_for_one,
+            isSelected = false,
+            predicate = { product -> product.discountType is DiscountType.TwoForOne }
+        ),
+        Filter(
+            name = R.string.filter_discount_bulk,
+            isSelected = false,
+            predicate = { product -> product.discountType is DiscountType.Bulk }
+        )
+    ),
     val productsCart: Map<Product, Int> = emptyMap()
 )
 

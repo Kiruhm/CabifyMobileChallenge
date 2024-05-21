@@ -6,5 +6,4 @@ import com.kiruhm.cabify_mobile_challenge.domain.repositories.ProductsRepository
 
 class ProductsRepositoryImpl(private val resources: Resources, private val drc: LocalDataRequestClassImpl) : ProductsRepository {
     override suspend fun getProducts() = drc.getProducts(resources)
-
 }

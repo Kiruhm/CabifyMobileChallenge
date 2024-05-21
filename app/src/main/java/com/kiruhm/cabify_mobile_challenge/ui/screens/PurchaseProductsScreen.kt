@@ -24,15 +24,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
-import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
 import com.kiruhm.cabify_mobile_challenge.ui.components.GeneralDialog
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
@@ -44,7 +46,6 @@ import com.kiruhm.cabify_mobile_challenge.ui.utils.formatPrice
 fun PurchaseProductsScreen(
     modifier: Modifier = Modifier,
     productsToBuy: Map<Product, Int>,
-    state: ProductsState,
     onEvent: (ProductsEvent) -> Unit
 ) {
     val dimensions = LocalDim.current
@@ -64,6 +65,7 @@ fun PurchaseProductsScreen(
 
     if (showPurchaseDialog){
         GeneralDialog(
+            modifier = Modifier.testTag(TestTags.BUY_PRODUCTS_DIALOG_TAG),
             description = stringResource(R.string.do_you_really_want_to_buy_the_selected_product),
             positiveButtonText = stringResource(R.string.buy),
             negativeButtonText = stringResource(R.string.cancel),
@@ -110,6 +112,7 @@ fun PurchaseProductsScreen(
                     ){ (product, quantity) ->
                         Row(
                             modifier = Modifier
+                                .testTag(TestTags.BUY_PRODUCT_ROW_TAG)
                                 .fillMaxWidth()
                                 .animateItemPlacement(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -151,10 +154,12 @@ fun PurchaseProductsScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensions.spaceMedium),
+                .padding(dimensions.spaceMedium)
         ) {
             Button(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .testTag(TestTags.BUY_PRODUCT_PURCHASE_BUTTON_TAG)
+                    .fillMaxWidth(),
                 enabled = productsToBuy.isNotEmpty(),
                 onClick = { showPurchaseDialog = true }
             ) {
@@ -164,17 +169,14 @@ fun PurchaseProductsScreen(
     }
 }
 
-@Preview
+@PreviewLightDark
+@PreviewScreenSizes
 @Composable
 private fun PurchaseProductsScreenPreview() {
     AppSurface {
         PurchaseProductsScreen(
             modifier = Modifier.fillMaxWidth(),
             productsToBuy = MockData.productsCart,
-            state = ProductsState(
-                products = MockData.productList,
-                productsCart = MockData.productsCart
-            ),
             onEvent = {}
         )
     }

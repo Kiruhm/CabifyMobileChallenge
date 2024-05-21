@@ -63,7 +63,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -79,6 +82,7 @@ import com.kiruhm.cabify_mobile_challenge.domain.models.Filter
 import com.kiruhm.cabify_mobile_challenge.domain.models.Product
 import com.kiruhm.cabify_mobile_challenge.domain.models.enums.DiscountType
 import com.kiruhm.cabify_mobile_challenge.domain.models.utils.Constants
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsEvent
 import com.kiruhm.cabify_mobile_challenge.presentation.main.view_models.ProductsState
 import com.kiruhm.cabify_mobile_challenge.ui.components.AppSurface
@@ -86,7 +90,9 @@ import com.kiruhm.cabify_mobile_challenge.ui.components.DiscountTag
 import com.kiruhm.cabify_mobile_challenge.ui.components.GridSelector
 import com.kiruhm.cabify_mobile_challenge.ui.components.ScrollDirection
 import com.kiruhm.cabify_mobile_challenge.ui.components.rememberDirectionalLazyStaggeredGridState
+import com.kiruhm.cabify_mobile_challenge.ui.theme.BulkColor
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
+import com.kiruhm.cabify_mobile_challenge.ui.theme.TwoForOneColor
 import com.kiruhm.cabify_mobile_challenge.ui.utils.MockData
 import com.kiruhm.cabify_mobile_challenge.ui.utils.formatPrice
 
@@ -99,6 +105,7 @@ fun ProductListScreen(
 ) {
 
     val dimensions = LocalDim.current
+    val context = LocalContext.current
 
     var query by rememberSaveable {
         mutableStateOf("")
@@ -162,12 +169,14 @@ fun ProductListScreen(
 
                 Box {
                     FloatingActionButton(
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier
+                            .testTag(TestTags.CAST_ICON_TAG)
+                            .align(Alignment.Center),
                         onClick = { onEvent.invoke(ProductsEvent.ShoppingCartClicked) }
                     ) {
                         Icon(
                             imageVector = Icons.Default.ShoppingBasket,
-                            contentDescription = "Shopping basket"
+                            contentDescription = stringResource(R.string.shopping_basket)
                         )
                     }
 
@@ -183,6 +192,8 @@ fun ProductListScreen(
                             contentColor = LocalContentColor.current
                         ) {
                             Text(
+                                modifier = Modifier
+                                    .testTag(TestTags.CAST_ICON_BADGE_TAG),
                                 text = productsCartCount.toString(),
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold
@@ -231,6 +242,11 @@ fun ProductListScreen(
                     ProductItem(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .testTag(TestTags.PRODUCT_ITEM_TAG)
+                            .semantics {
+                                contentDescription =
+                                    context.getString(if (displayGrid) R.string.product_item_description_grid else R.string.product_item_description_list)
+                            }
                             .animateItemPlacement(),
                         product = product,
                         displayGrid = displayGrid,
@@ -259,7 +275,9 @@ private fun ProductListScreenHeader(
     val dimensions = LocalDim.current
 
     SearchBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(TestTags.SEARCH_BAR_TAG),
         query = query,
         onQueryChange = { insertedText -> onQueryChanged(insertedText) },
         onSearch = {},
@@ -267,7 +285,9 @@ private fun ProductListScreenHeader(
         onActiveChange = {},
         trailingIcon = {
             if (query.isNotEmpty()){
-                IconButton(onClick = { onQueryChanged("") }) {
+                IconButton(
+                    modifier = Modifier.testTag(TestTags.SEARCH_BAR_CLEAR_TAG),
+                    onClick = { onQueryChanged("") }) {
                     Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(id = R.string.clear))
                 }
             }
@@ -293,6 +313,7 @@ private fun ProductListScreenHeader(
                 item {
                     Box(
                         modifier = Modifier
+                            .testTag(TestTags.PRODUCT_ITEM_FILTER_CLEAR_TAG)
                             .background(MaterialTheme.colorScheme.secondaryContainer, CircleShape)
                             .border(1.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
                             .padding(dimensions.spaceExtraSmall)
@@ -311,7 +332,9 @@ private fun ProductListScreenHeader(
                 key = { it.hashCode() }
             ){ filter ->
                 FilterItem(
-                    modifier = Modifier.animateItemPlacement(),
+                    modifier = Modifier
+                        .testTag(TestTags.PRODUCT_ITEM_FILTER_TAG)
+                        .animateItemPlacement(),
                     name = filter.name,
                     isSelected = filter.isSelected,
                     onClicked = {
@@ -422,9 +445,9 @@ private fun ProductItemList(
                             .padding(top = dimensions.spaceXXSmall)
                             .background(
                                 color = when (product.discountType) {
-                                    is DiscountType.Bulk -> Color.Blue
+                                    is DiscountType.Bulk -> BulkColor
                                     DiscountType.None -> Color.Transparent
-                                    DiscountType.TwoForOne -> Color.Red
+                                    DiscountType.TwoForOne -> TwoForOneColor
                                 },
                                 shape = RoundedCornerShape(
                                     topStart = dimensions.cornersSmall,

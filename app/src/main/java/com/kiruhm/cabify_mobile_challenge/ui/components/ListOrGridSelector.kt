@@ -15,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import com.kiruhm.cabify_mobile_challenge.domain.models.utils.TestTags
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +36,7 @@ fun GridSelector(
         modifier = modifier
     ) {
         SegmentedButton(
+            modifier = Modifier.testTag(TestTags.GRID_SELECTOR_LIST_TAG),
             selected = !displayGrid,
             onClick = { if (displayGrid) onToggleGrid.invoke(false) },
             shape = RoundedCornerShape(dimensions.cornersLarge, 0.dp, 0.dp, dimensions.cornersLarge),
@@ -46,6 +49,7 @@ fun GridSelector(
             }
         )
         SegmentedButton(
+            modifier = Modifier.testTag(TestTags.GRID_SELECTOR_GRID_TAG),
             selected = displayGrid,
             onClick = { if (!displayGrid) onToggleGrid.invoke(true) },
             shape = RoundedCornerShape(0.dp, dimensions.cornersLarge, dimensions.cornersLarge, 0.dp),

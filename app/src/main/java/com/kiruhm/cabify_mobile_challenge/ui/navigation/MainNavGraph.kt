@@ -145,14 +145,11 @@ fun MainNavGraph(
             PurchaseProductsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 productsToBuy = productsToBuy,
-                state = state,
                 onEvent = { event ->
-
                     when(event){
                         is ProductsEvent.PurchaseItems -> navController.navigateToAndClear(Graphs.Main.route)
                         else -> {}
                     }
-
                     onEvent(event)
                 }
             )

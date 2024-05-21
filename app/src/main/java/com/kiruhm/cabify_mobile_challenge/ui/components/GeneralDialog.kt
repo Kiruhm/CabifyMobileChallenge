@@ -17,7 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import com.kiruhm.cabify_mobile_challenge.R
 import com.kiruhm.cabify_mobile_challenge.ui.theme.LocalDim
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,10 +38,10 @@ fun GeneralDialog(
 ) {
 
     val dimensions = LocalDim.current
+    val context = LocalContext.current
 
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    BasicAlertDialog(modifier = modifier, onDismissRequest = onDismiss) {
         Card(
-            modifier = modifier,
             shape = MaterialTheme.shapes.medium,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -63,7 +68,13 @@ fun GeneralDialog(
                 ) {
                     Text(
                         modifier = Modifier
-                            .clickable { onCancel.invoke() }
+                            .semantics {
+                                contentDescription = context.getString(R.string.negative_button)
+                            }
+                            .clickable(
+                                role = Role.Button,
+                                onClick = { onCancel.invoke() }
+                            )
                             .padding(horizontal = dimensions.spaceExtraSmall),
                         text = negativeButtonText,
                         style = MaterialTheme.typography.bodyMedium,
@@ -71,7 +82,13 @@ fun GeneralDialog(
                     )
                     Text(
                         modifier = Modifier
-                            .clickable { onAccept.invoke() }
+                            .semantics {
+                                contentDescription = context.getString(R.string.positive_button)
+                            }
+                            .clickable(
+                                role = Role.Button,
+                                onClick = { onAccept.invoke() }
+                            )
                             .padding(horizontal = dimensions.spaceExtraSmall),
                         style = MaterialTheme.typography.bodyMedium,
                         text = positiveButtonText
